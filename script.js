@@ -15,7 +15,7 @@ function divide(a, b) {
 }
 
 function operate(number1, number2, operator) {
-
+    return operations[operator](number1, number2);
 }
 
 function addNumberScreen(number) {
@@ -30,9 +30,33 @@ function addNumberScreen(number) {
 
 function executeCommand(command) {
     if(command === 'C') {
+        reset();
+    } else if(command === '=') {
         const textScreen = document.querySelector('.screen__text');
-        textScreen.textContent = '0';
+
+        secondNumber = parseInt(textScreen.textContent);
+        textScreen.textContent = operate(firstNumber, secondNumber, operation);
+    } else {
+        addOperator(command);
     }
+}
+
+function reset() {
+    const textScreen = document.querySelector('.screen__text');
+    textScreen.textContent = '0';
+
+    firstNumber = null;
+    secondNumber = null;
+    operation = null;
+}
+
+function addOperator(operatorSymbol) {
+    const textScreen = document.querySelector('.screen__text');
+
+    firstNumber = parseInt(textScreen.textContent);
+    operation = operatorSymbol;
+
+    textScreen.textContent = '0';
 }
 
 const buttons = document.querySelectorAll('.keyboard__button');
@@ -46,3 +70,14 @@ buttons.forEach(button => button.addEventListener('click', e => {
         addNumberScreen(buttonText);
     }
 }));
+
+let firstNumber = null;
+let secondNumber = null;
+let operation = null;
+
+const operations = {
+    '+': add,
+    '-': subtract,
+    'x': multiply,
+    '/': divide
+};
