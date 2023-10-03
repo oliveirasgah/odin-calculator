@@ -22,7 +22,7 @@ function addNumberScreen(number) {
     const textScreen = document.querySelector('.screen__text');
     const textContentScreen = textScreen.textContent;
 
-    if(textContentScreen.length < 8) {
+    if (textContentScreen.length < 8 || resetScreen) {
         textScreen.textContent = (textContentScreen === '0' || resetScreen) ?
             number : textScreen.textContent + number;
         resetScreen = false;
@@ -30,21 +30,33 @@ function addNumberScreen(number) {
 }
 
 function executeCommand(command) {
-    if(command === 'C') {
-        reset();
-    } else if(command === '=') {
-        const textScreen = document.querySelector('.screen__text');
+    let textScreenReturn;
 
-        if(firstNumber != null) {
-            secondNumber = parseInt(textScreen.textContent);
-            textScreen.textContent = operate(
-                firstNumber,
-                secondNumber,
-                operation
-            );
+    if (command === 'C') {
+        reset();
+    } else if (!blockAll) {
+        if (command === '=') {
+            const textScreen = document.querySelector('.screen__text');
+
+            if (firstNumber != null) {
+                secondNumber = parseInt(textScreen.textContent);
+                textScreenReturn = operate(
+                    firstNumber,
+                    secondNumber,
+                    operation
+                ).toString();
+
+                if (textScreenReturn === 'Infinity'
+                    || textScreenReturn.length > 8) {
+                    textScreen.textContent = 'Error';
+                    blockAll = true;
+                } else {
+                    textScreen.textContent = textScreenReturn;
+                }
+            }
+        } else {
+            addOperator(command);
         }
-    } else {
-        addOperator(command);
     }
 }
 
@@ -55,6 +67,8 @@ function reset() {
     firstNumber = null;
     secondNumber = null;
     operation = null;
+    resetScreen = true;
+    blockAll = false;
 }
 
 function addOperator(operatorSymbol) {
@@ -63,15 +77,21 @@ function addOperator(operatorSymbol) {
 
     resetScreen = true;
 
-    if(firstNumber != null) {
+    if (firstNumber != null) {
         secondNumber = parseInt(textContent);
-        textContent = operate(firstNumber, secondNumber, operation);
+        textContent = operate(firstNumber, secondNumber, operation).toString();
     }
 
     firstNumber = parseInt(textContent);
     operation = operatorSymbol;
 
-    textScreen.textContent = textContent;
+    if (textContent === 'Infinity'
+        || textContent.length > 8) {
+        textScreen.textContent = 'Error';
+        blockAll = true;
+    } else {
+        textScreen.textContent = textContent;
+    }
 }
 
 const buttons = document.querySelectorAll('.keyboard__button');
@@ -79,9 +99,9 @@ const buttons = document.querySelectorAll('.keyboard__button');
 buttons.forEach(button => button.addEventListener('click', e => {
     const buttonText = e.target.textContent;
 
-    if(isNaN(buttonText)) {
+    if (isNaN(buttonText)) {
         executeCommand(buttonText)
-    } else {
+    } else if(!blockAll) {
         addNumberScreen(buttonText);
     }
 }));
@@ -90,6 +110,7 @@ let firstNumber = null;
 let secondNumber = null;
 let operation = null;
 let resetScreen = true;
+let blockAll = false;
 
 const operations = {
     '+': add,
