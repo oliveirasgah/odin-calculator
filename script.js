@@ -34,8 +34,10 @@ function executeCommand(command) {
     } else if(command === '=') {
         const textScreen = document.querySelector('.screen__text');
 
-        secondNumber = parseInt(textScreen.textContent);
-        textScreen.textContent = operate(firstNumber, secondNumber, operation);
+        if(firstNumber != null) {
+            secondNumber = parseInt(textScreen.textContent);
+            textScreen.textContent = operate(firstNumber, secondNumber, operation);
+        }
     } else {
         addOperator(command);
     }
