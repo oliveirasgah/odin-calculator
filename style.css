@@ -49,4 +49,39 @@ body {
     height: 55px;
     font-size: 20px;
     border: none;
+    background-color: whitesmoke;
+}
+
+.keyboard__button:hover {
+    background-color: rgb(210, 210, 210);
+}
+
+.keyboard__button:active {
+    background-color: rgb(190, 190, 190);
+}
+
+.clear-button {
+    background-color: rgb(224, 60, 19);
+    color: whitesmoke;
+}
+
+.clear-button:hover {
+    background-color: rgb(204, 40, 9);
+}
+
+.clear-button:active {
+    background-color: rgb(194, 30, 0);
+}
+
+.equals-button {
+    background-color: rgb(224, 135, 19);
+    color: whitesmoke;
+}
+
+.equals-button:hover {
+    background-color: rgb(204, 115, 9);
+}
+
+.equals-button:active {
+    background-color: rgb(194, 105, 0);
 }

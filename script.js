@@ -23,8 +23,9 @@ function addNumberScreen(number) {
     const textContentScreen = textScreen.textContent;
 
     if(textContentScreen.length < 8) {
-        textScreen.textContent = (textContentScreen === '0') ?
+        textScreen.textContent = (textContentScreen === '0' || resetScreen) ?
             number : textScreen.textContent + number;
+        resetScreen = false;
     }
 }
 
@@ -36,7 +37,11 @@ function executeCommand(command) {
 
         if(firstNumber != null) {
             secondNumber = parseInt(textScreen.textContent);
-            textScreen.textContent = operate(firstNumber, secondNumber, operation);
+            textScreen.textContent = operate(
+                firstNumber,
+                secondNumber,
+                operation
+            );
         }
     } else {
         addOperator(command);
@@ -54,11 +59,19 @@ function reset() {
 
 function addOperator(operatorSymbol) {
     const textScreen = document.querySelector('.screen__text');
+    let textContent = textScreen.textContent;
 
-    firstNumber = parseInt(textScreen.textContent);
+    resetScreen = true;
+
+    if(firstNumber != null) {
+        secondNumber = parseInt(textContent);
+        textContent = operate(firstNumber, secondNumber, operation);
+    }
+
+    firstNumber = parseInt(textContent);
     operation = operatorSymbol;
 
-    textScreen.textContent = '0';
+    textScreen.textContent = textContent;
 }
 
 const buttons = document.querySelectorAll('.keyboard__button');
@@ -76,6 +89,7 @@ buttons.forEach(button => button.addEventListener('click', e => {
 let firstNumber = null;
 let secondNumber = null;
 let operation = null;
+let resetScreen = true;
 
 const operations = {
     '+': add,
